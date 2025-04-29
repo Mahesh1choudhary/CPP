@@ -56,6 +56,86 @@ int main(){
 
 
 
+    cout<<endl<<endl;
+    cout<<"circular reference problem"<<endl<<endl;
+
+    // circular reference problem - if two objecs holds shared pointer to each other, then reference never drops to zero causing memory leak
+    // solution - weak pointer
+    {
+        class B;
+        class A{
+            public:
+            shared_ptr<B> bptr;
+            A(){
+                cout<<"A created"<<endl;
+            }
+            ~A(){
+                cout<<"A destroyed"<<endl;
+            }
+        };
+
+
+        class B{
+            public:
+            shared_ptr<A> aptr;
+            B(){
+                cout<<"B created"<<endl;
+            }
+            ~B(){
+                cout<<"B destroyed"<<endl;
+            }
+        };
+
+        {
+            shared_ptr<A> ptra= make_shared<A>();
+            shared_ptr<B> ptrb= make_shared<B>();
+            
+            ptra->bptr = ptrb;
+            ptrb->aptr = ptra; // circular dependency- problem start here
+        }
+
+        
+
+    }
+
+
+    // solution - using weak pointer in one of class
+    cout<<endl<<"solution"<<endl;
+    {
+        class B;
+        class A{
+            public:
+            shared_ptr<B> bptr;
+            A(){
+                cout<<"A created"<<endl;
+            }
+            ~A(){
+                cout<<"A destroyed"<<endl;
+            }
+        };
+
+
+        class B{
+            public:
+            weak_ptr<A> aptr;
+            B(){
+                cout<<"B created"<<endl;
+            }
+            ~B(){
+                cout<<"B destroyed"<<endl;
+            }
+        };
+
+        {
+            shared_ptr<A> ptra= make_shared<A>();
+            shared_ptr<B> ptrb= make_shared<B>();
+            
+            ptra->bptr = ptrb;
+            ptrb->aptr = ptra; // circular dependency- problem start here
+        }
+    }
+
+
 
 
     return 0;
