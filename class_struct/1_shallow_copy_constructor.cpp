@@ -16,8 +16,10 @@ when constructor of B ends, temporary object of A is deleted, which deletes the 
 on innerc, so it again tries to delete the same str memory location, hence the error
 
 solution - define copy constructor and operator to do deep copy, in class A
-this should be done in every class , which has pointers, references as membe functions
 */
+
+// Rule - always define your own destructor, copy constructor, copy assignment operator, move operator and move constructor if any member function is a pointer or reference
+
 
 const int base_size = 100000l;
 
@@ -45,6 +47,7 @@ class B {
 public:
    B(uint s) {
     innerc = A(s);
+    // innerc = move(A(s)) will also give error for the similar reason- the str of temporary object and innerc both point to same memory location
    }
 
    ~B() {}
